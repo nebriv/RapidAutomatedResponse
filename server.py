@@ -45,36 +45,35 @@ from grr.lib.flows.console import debugging
 from grr.lib.flows.general import memory
 
 def main(unused_argv): 
-   # Add any config contexts you want here. 
-   config_lib.CONFIG.AddContext("Commandline Context") 
+    # Add any config contexts you want here. 
+    config_lib.CONFIG.AddContext("Commandline Context") 
 
-   # This initializes all the stuff - it also calls registry.Init() itself. 
-   startup.Init() 
+    # This initializes all the stuff - it also calls registry.Init() itself. 
+    startup.Init() 
 
-	s = socket.socket()         # Create a socket object
-	host = socket.gethostname() # Get local machine name
-	port = 8081               # Reserve a port for your service.
-	s.bind((host, port))        # Bind to the port
-	s.listen(5)                 # Now wait for client connection.
-	while True:
-		try:
-			while True:
- 				c, addr = s.accept()     # Establish connection with client.
- 				data = c.recv(4096)
- 				while "EOD" not in data:
- 					data += c.recv(4096)
- 				alert = data.split("*STARTALERT*")[1].split("*ENDALERT*")[0]
- 				
- 		except KeyboardInterrupt:
- 			print "Quitting"
- 			c.close()
- 			break
- 		finally:
- 			c.send('Thank you for connecting')
- 			c.close()                # Close the connection
+    s = socket.socket()         # Create a socket object
+    host = socket.gethostname() # Get local machine name
+    port = 8081               # Reserve a port for your service.
+    s.bind((host, port))        # Bind to the port
+    s.listen(5)                 # Now wait for client connection.
+    while True:
+        try:
+            while True:
+                c, addr = s.accept()     # Establish connection with client.
+                data = c.recv(4096)
+                while "EOD" not in data:
+                    data += c.recv(4096)
+                alert = data.split("*STARTALERT*")[1].split("*ENDALERT*")[0]
+                
+        except KeyboardInterrupt:
+            print "Quitting"
+            c.close()
+            break
+        finally:
+            c.send('Thank you for connecting')
+            c.close()                # Close the connection
 
-   # This is where you put your main code. 
-   print len(theconsole.SearchClients(".")) 
+    print len(theconsole.SearchClients(".")) 
 
 if __name__ == "__main__": 
   flags.StartMain(main) 
