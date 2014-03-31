@@ -51,30 +51,27 @@ def main(unused_argv):
    # This initializes all the stuff - it also calls registry.Init() itself. 
    startup.Init() 
 
-s = socket.socket()         # Create a socket object
-host = socket.gethostname() # Get local machine name
-port = 8081               # Reserve a port for your service.
-s.bind((host, port))        # Bind to the port
-s.listen(5)                 # Now wait for client connection.
-while True:
-	try:
-		while True:
- 			c, addr = s.accept()     # Establish connection with client.
- 			data = c.recv(4096)
- 			while "EOD" not in data:
- 				data += c.recv(4096)
- 			alert = data.split("*STARTALERT*")[1].split("*ENDALERT*")[0]
- 			print alert
- 	except KeyboardInterrupt:
- 		print "Quitting"
- 		c.close()
- 		break
- 	finally:
- 		c.send('Thank you for connecting')
- 		c.close()                # Close the connection
-
- 
-
+	s = socket.socket()         # Create a socket object
+	host = socket.gethostname() # Get local machine name
+	port = 8081               # Reserve a port for your service.
+	s.bind((host, port))        # Bind to the port
+	s.listen(5)                 # Now wait for client connection.
+	while True:
+		try:
+			while True:
+ 				c, addr = s.accept()     # Establish connection with client.
+ 				data = c.recv(4096)
+ 				while "EOD" not in data:
+ 					data += c.recv(4096)
+ 				alert = data.split("*STARTALERT*")[1].split("*ENDALERT*")[0]
+ 				
+ 		except KeyboardInterrupt:
+ 			print "Quitting"
+ 			c.close()
+ 			break
+ 		finally:
+ 			c.send('Thank you for connecting')
+ 			c.close()                # Close the connection
 
    # This is where you put your main code. 
    print len(theconsole.SearchClients(".")) 
