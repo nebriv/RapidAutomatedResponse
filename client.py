@@ -18,6 +18,7 @@ class Alert:
 			#print split
 		self.time = alert[0]
 		self.time = "2014/" + self.time
+        self.alerttime = self.time
 		#print self.time
 		self.time = datetime.strptime(self.time, "%Y/%m/%d-%H:%M:%S.%f")
 		#self.time = time.mktime(self.time.timetuple())*1e3 + self.time.microsecond/1e3
@@ -78,7 +79,7 @@ def lookup(ip):
         if (f & net[1] == net[0]):
             return True
     return False
-
+  
 def notsamealert(alert1, alert2):
 	timediff = alert1.time - alert2.time
 	time = timediff.seconds + timediff.microseconds/1E6
@@ -127,35 +128,13 @@ for line in loglines:
 		if lookup(newalert.srcip):
 			print "New Alert"
 			newalert.setmac(getmac(newalert.srcip))
-			print newalert.mac + "|" + newalert.type + "|" + newalert.priority
-			sendalert("*STARTALERT*" + newalert.mac + "|" + newalert.type + "|" + newalert.priority + "*ENDALERT*")
-
+			print alert.alerttime + "|FROM|" + newalert.srcip + "|" + newalert.mac + "|" + newalert.type + "|" + newalert.priority
+			sendalert("*STARTALERT*" + alert.alerttime + "|FROM|" + newalert.srcip + "|" + newalert.mac + "|" + newalert.type + "|" + newalert.priority + "*ENDALERT*")
+			#print "----------------------"
+        elif lookup(newalert.dstip):
+			print "New Alert"
+			newalert.setmac(getmac(newalert.srcip))
+			print alert.alerttime + "|TO|" + newalert.dstip + "|" + newalert.mac + "|" + newalert.type + "|" + newalert.priority
+			sendalert("*STARTALERT*" + alert.alerttime + "|TO|" + newalert.dstip + "|" + newalert.mac + "|" + newalert.type + "|" + newalert.priority + "*ENDALERT*")
 			#print "----------------------"
 	oldalert = newalert
-
-	#if len(recentalerts) > 0:
-		#print "Looping through alerts"
-		#for alert in recentalerts:
-		#	if samealert(newalert, alert):
-				#print "Same Alert"
-		#		itsnew = False
-		#	else:
-		#		itsnew = True
-			# else:
-			# 	#print "New Alert"
-			# 	if len(recentalerts) > 4:
-			# 		print "Deleting oldest recent alert"
-			# 		del recentalerts[-1]
-			# 		print len(recentalerts)
-			# 	recentalerts.append(newalert)
-			# 	itsnew = True
-	#else:
-		#print "No recent alerts, obviously its new."
-		#recentalerts.insert(0, newalert)
-		#itsnew = True
-	#print itsnew
-	#if itsnew:
-
-			#print newalert.type
-			#print getmac(newalert.srcip)
-    #sendalert(line)
