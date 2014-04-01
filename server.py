@@ -46,7 +46,7 @@ from grr.lib.flows.general import memory
 
 def main(unused_argv): 
     # Add any config contexts you want here. 
-    config_lib.CONFIG.AddContext("Commandline Context") 
+    config_lib.CONFIG.AddContext("--config /etc/grr/grr-server.yaml") 
 
     # This initializes all the stuff - it also calls registry.Init() itself. 
     startup.Init() 
@@ -64,7 +64,22 @@ def main(unused_argv):
                 while "EOD" not in data:
                     data += c.recv(4096)
                 alert = data.split("*STARTALERT*")[1].split("*ENDALERT*")[0]
-                
+        	mac = alert.split("|")[0]
+		alertType = alert.split("|")[1]
+		computer = theconsole.SearchClients(mac)
+		if len(computer) > 0:
+			if len(computer) > 1:
+				print "Too Many Results...? Fix this Later"
+			else:
+				computer = computer[0]
+				grrID = str(computer[0]).split("aff4:/")[1].split(">")[0]
+				hostname = computer[1]
+				lastchecked = computer[3]
+				print "------------------------------------"
+				print "Alert Type: " + alertType
+				print "GRR_ID: " + grrID 
+				print "Hostname: " + hostname
+				print "Last Checkin: " + lastchecked
         except KeyboardInterrupt:
             print "Quitting"
             c.close()
