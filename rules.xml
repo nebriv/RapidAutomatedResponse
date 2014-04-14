@@ -1,0 +1,102 @@
+<AutomatedResponse>
+	<ResponseName></ResponseName>
+	
+	<ResponseDescription>
+	</ResponseDescription>
+	
+	<ResponseID></ResponseID>
+	
+	<Alert_ID>
+	</Alert_ID>
+	<Actions>
+		<Flows>
+			<Flow>
+				<Flow_Name></Flow_Name>
+				
+				<Description>
+				</Description>
+				
+				<Priority></Priority>
+				
+				<Flow_Options>
+					<path>C:\</path>
+				</Flow_Options>
+			</Flow>
+		</Flows>
+		
+		<Hunts>
+			<Hunt>
+				<Flow>
+					<Flow_Name></Flow_Name>
+					
+					<Description>
+					</Description>
+					
+					<Priority></Priority>
+					
+					<Flow_Options>
+						<path>C:\</path>
+					</Flow_Options>
+				</Flow>
+
+				<Client_Limit></Client_Limit>
+				<Client_Rate></Client_Rate>
+				<Expiry_Time></Expiry_Time>
+				
+				<Outputs>
+					<Output>
+						<Plugin></Plugin>
+						<Email></Email>
+						<Email_Limit></Email_Limit>
+					</Output>
+				</Outputs>
+				
+				<Rules>
+					<Rule>
+						<Rule_Type></Rule_Type>
+						<Rule_Options>
+						</Rule_Options>
+					</Rule>
+				</Rules>
+			</Hunt>
+		</Hunts>
+	</Actions>
+</AutomatedResponse>
+
+
+
+
+BOTNET
+------
+Interrogate
+GetProcessesBinaries
+Netstat
+RunKeyBinaries
+Services
+
+
+Identified Website
+------------------
+Interrogate
+ChromeHistory
+FirefoxHistory
+Browser Temp Files (FetchFiles)
+Screenshot
+MRUs
+netstat
+
+
+Identified Process Running
+--------------------------
+Interrogate
+Netstat
+GetProcessesBinaries
+MRU
+RunKeyBinaries
+Services
+ChromeHistory
+FirefoxHistory
+DownloadMemoryImage
+
+Flagged_Individual
+------------------
