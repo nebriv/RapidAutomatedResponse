@@ -64,22 +64,57 @@ def main(unused_argv):
                 while "EOD" not in data:
                     data += c.recv(4096)
                 alert = data.split("*STARTALERT*")[1].split("*ENDALERT*")[0]
-        	mac = alert.split("|")[0]
-		alertType = alert.split("|")[1]
-		computer = theconsole.SearchClients(mac)
-		if len(computer) > 0:
-			if len(computer) > 1:
+		alert = alert.split("|")
+		alert_time = str(alert[0])
+		alert_direction = str(alert[1])
+		alert_ip = str(alert[2])
+		alert_mac = str(alert[3]).replace(":","")
+		alert_type = str(alert[4])
+		alert_priority = str(alert[5])
+		results = theconsole.SearchClients(alert_mac)
+		if len(results) > 0:
+			if len(results) > 1:
 				print "Too Many Results...? Fix this Later"
 			else:
-				computer = computer[0]
-				grrID = str(computer[0]).split("aff4:/")[1].split(">")[0]
-				hostname = computer[1]
-				lastchecked = computer[3]
-				print "------------------------------------"
-				print "Alert Type: " + alertType
-				print "GRR_ID: " + grrID 
-				print "Hostname: " + hostname
-				print "Last Checkin: " + lastchecked
+				computer = results[0]
+				grrobject = computer[0]
+				grr_IP =  grrobject.Get(grrobject.Schema.CLIENT_IP)
+				grr_MAC = grrobject.Get(grrobject.Schema.MAC_ADDRESS)	
+				#Testing to see if the alert if for the proper computer.
+				if str(grr_IP) == alert_ip:
+					grr_ID = str(computer[0]).split("aff4:/")[1].split(">")[0]
+					hostname = computer[1]
+					lastchecked = computer[3]
+					print "------------------------------------"
+					print "Alert Type: " + alert_type
+					print "GRR_ID: " + grr_ID 
+					print "Hostname: " + hostname
+					print "Last Checkin: " + lastchecked
+					print "Last IP in GRR: " + str(grr_IP)
+					
+					users = grrobject.Get(grrobject.Schema.USERNAMES)
+					for user in users:
+						user = str(user)
+						if not (user == "LocalService" or user == "NetworkService" or user == "systemprofile" ):
+							#Launch flow to collect browser artifacts
+							print "Collecting Chrome Browser Data For " + user
+							flow.GRRFlow.StartFlow(client_id=grr_ID, flow_name="ChromeHistory", username=user)
+
+
+	
+				else:
+					print "------------------------------------"
+					print "Alert host information does not match GRR Database"
+					grr_ID = str(computer[0]).split("aff4:/")[1].split(">")[0]
+					hostname = computer[1]
+					lastchecked = computer[3]
+					print "Alert Type: " + alert_type
+					print "GRR_ID: " + grr_ID 
+					print "Hostname: " + hostname
+					print "Last Checkin: " + lastchecked
+					print "Last IP in GRR: " + str(grr_IP)
+		else:
+			print "Client not found"
         except KeyboardInterrupt:
             print "Quitting"
             c.close()
