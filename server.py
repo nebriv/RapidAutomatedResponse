@@ -45,21 +45,19 @@ from grr.lib.flows.console import debugging
 from grr.lib.flows.general import memory
 
 def main(unused_argv): 
-    # Add any config contexts you want here. 
     config_lib.CONFIG.AddContext("--config /etc/grr/grr-server.yaml") 
 
-    # This initializes all the stuff - it also calls registry.Init() itself. 
     startup.Init() 
 
-    s = socket.socket()         # Create a socket object
-    host = socket.gethostname() # Get local machine name
-    port = 8081               # Reserve a port for your service.
-    s.bind((host, port))        # Bind to the port
-    s.listen(5)                 # Now wait for client connection.
+    s = socket.socket()
+    host = socket.gethostname()
+    port = 8081
+    s.bind((host, port))
+    s.listen(5)
     while True:
         try:
             while True:
-                c, addr = s.accept()     # Establish connection with client.
+                c, addr = s.accept()
                 data = c.recv(4096)
                 while "EOD" not in data:
                     data += c.recv(4096)
@@ -98,10 +96,7 @@ def main(unused_argv):
 						if not (user == "LocalService" or user == "NetworkService" or user == "systemprofile" ):
 							#Launch flow to collect browser artifacts
 							print "Collecting Chrome Browser Data For " + user
-							flow.GRRFlow.StartFlow(client_id=grr_ID, flow_name="ChromeHistory", username=user)
-
-
-	
+							flow.GRRFlow.StartFlow(client_id=grr_ID, flow_name="ChromeHistory", username=user)	
 				else:
 					print "------------------------------------"
 					print "Alert host information does not match GRR Database"
@@ -121,7 +116,7 @@ def main(unused_argv):
             break
         finally:
             c.send('Thank you for connecting')
-            c.close()                # Close the connection
+            c.close()
 
     print len(theconsole.SearchClients(".")) 
 
